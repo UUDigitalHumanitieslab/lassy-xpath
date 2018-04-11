@@ -5,7 +5,9 @@
     "main": "index.js",
     "types": "index.d.ts",
     "scripts": {
-        "build": "tsc",
+        "build": "npm run build:ngc && npm run build:copyfiles",
+        "build:ngc": "ngc",
+        "build:copyfiles": "copyfiles -u 2 dist/src/*.* .",
         "test": "karma start karma.conf.js"
     },
     "repository": {
@@ -16,9 +18,12 @@
     "license": "CC-BY-NC-SA-4.0",
     "devDependencies": {
         "@angular/common": "^5.2.0",
+        "@angular/compiler": "^5.2.0",
+        "@angular/compiler-cli": "^5.2.0",
         "@angular/core": "^5.2.0",
         "@angular/forms": "^5.2.0",
         "@angular/http": "^5.2.0",
+        "@angular/platform-server": "^5.2.0",
         "@types/es6-shim": "^0.31.36",
         "@types/jasmine": "^2.8.6",
         "@types/jquery": "^3.3.1",
@@ -37,11 +42,12 @@
         "karma-webpack": "^3.0.0",
         "rxjs": "^5.5.6",
         "ts-loader": "^4.1.0",
-        "typescript": "^2.7.2",
+        "typescript": "<2.7",
         "webpack": "^4.1.1"
     },
     "dependencies": {
         "brace": "^0.11.1",
+        "copyfiles": "^2.0.0",
         "ts-xpath": "^0.1.2"
     }
 }
