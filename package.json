@@ -7,7 +7,7 @@
     "scripts": {
         "build": "npm run build:ngc && npm run build:copyfiles",
         "build:ngc": "ngc",
-        "build:copyfiles": "copyfiles -u 2 dist/src/**/* .",
+        "build:copyfiles": "copyfiles -u 2 dist/src/**/**/**/**/* .",
         "test": "karma start karma.conf.js"
     },
     "repository": {
