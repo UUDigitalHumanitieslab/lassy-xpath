@@ -9,7 +9,7 @@ import { modeName as xpathModeName, Completer } from './xpath-mode';
 import 'brace/ext/language_tools';
 import 'brace/theme/dawn';
 import { Macro } from '../../services/macro';
-import { ParseMessage, LassyXPathParser } from '../../services/lassy-xpath-parser';
+import { ParseMessage, Parser } from '../../services/parser';
 
 let AceRange = ace.acequire('ace/range').Range;
 
@@ -51,7 +51,7 @@ export class XPathEditor {
         return this.xpathParserService.parse(xpath);
     });
 
-    constructor(private xpathParserService: LassyXPathParser, private macroService: Macro) {
+    constructor(private xpathParserService: Parser, private macroService: Macro) {
         this.macroService.onceLoaded.then(() => {
             this.macroServiceLoaded = true;
             // parse again, just to be sure

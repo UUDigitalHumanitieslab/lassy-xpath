@@ -1,3 +1,3 @@
-export * from './lassy-xpath-parser';
+export * from './parser';
 export * from './macro';
-export * from './xpath-extractinator';
+export * from './extractinator';

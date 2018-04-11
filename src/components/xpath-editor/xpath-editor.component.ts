@@ -2,7 +2,7 @@ import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, 
 import { Subscription } from 'rxjs/Subscription';
 
 import { XPathEditor } from './xpath-editor';
-import { LassyXPathParserService, MacroService } from '../../services/_ng';
+import { ParserService, MacroService } from '../../services/_ng';
 
 @Component({
     selector: 'lx-editor',
@@ -31,7 +31,7 @@ export class XPathEditorComponent extends XPathEditor implements OnDestroy, OnIn
 
     public errorMessage: string;
 
-    constructor(xpathParserService: LassyXPathParserService, macroService: MacroService) {
+    constructor(xpathParserService: ParserService, macroService: MacroService) {
         super(xpathParserService, macroService);
     }
 

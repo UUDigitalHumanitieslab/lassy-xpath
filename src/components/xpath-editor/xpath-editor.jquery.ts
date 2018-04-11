@@ -1,7 +1,7 @@
 import { Subscription } from 'rxjs/Subscription';
 import * as $ from 'jquery';
 import { XPathEditor } from './xpath-editor';
-import { MacroService, LassyXPathParser } from '../../services/_jquery';
+import { MacroService, Parser } from '../../services/_jquery';
 
 class JQueryXPathEditor extends XPathEditor {
     private $wrapper: JQuery;
@@ -12,7 +12,7 @@ class JQueryXPathEditor extends XPathEditor {
         let macroService = new MacroService();
         macroService.loadFromUrl(macrosUrl);
 
-        super(new LassyXPathParser(), macroService);
+        super(new Parser(), macroService);
         this.render(textarea);
     }
 

@@ -1,6 +1,6 @@
 import { XPathModels, XPathParser } from 'ts-xpath';
 
-export class XPathExtractinator {
+export class Extractinator {
     private parser: XPathParser;
 
     constructor() {

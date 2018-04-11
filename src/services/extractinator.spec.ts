@@ -1,12 +1,12 @@
-import { XPathExtractinator, PathVariable } from './xpath-extractinator';
+import { Extractinator, PathVariable } from './extractinator';
 import { XPathModels } from 'ts-xpath';
 
 describe("XPath Extractinator",
     () => {
-        let extractinator: XPathExtractinator;
+        let extractinator: Extractinator;
 
         beforeEach(() => {
-            extractinator = new XPathExtractinator();
+            extractinator = new Extractinator();
         })
 
         it("Ignores empty input", () => {

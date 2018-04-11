@@ -1,6 +1,12 @@
+## Lassy XPATH
+
+Module for working with XPATH queries on [LASSY XML](https://www.let.rug.nl/vannoord/Lassy/) files. It includes a graphical editor including auto completion, macros and validation based on [Ace](https://ace.c9.io/), a parser and validator based on [ts-xpath](https://github.com/UUDigitalHumanitieslab/ts-xpath) and an "extractinator" for determining XPATHs to get each node from the returned tree separately. The functionality can be used as an Angular module, using JQuery or as plain JavaScript.
+
 ## Angular 2+
 
 (Only tested in Angular 5)
+
+Import the module:
 
 ```typescript
 import { LassyXPathModule } from 'lassy-xpath/ng';
@@ -11,15 +17,17 @@ import { LassyXPathModule } from 'lassy-xpath/ng';
 export class AppModule {}
 ```
 
+Includes the services:
+
 ```typescript
-import { MacroService, XPathExtractinatorService, ValueEvent } from 'lassy-xpath/ng';
+import { MacroService, ExtractinatorService, ValueEvent } from 'lassy-xpath/ng';
 
 
 @Component()
 export class ExampleComponent {
     constructor(
         macroService: MacroService,
-        private extractinator: XPathExtractinatorService) {
+        private extractinatorService: ExtractinatorService) {
         // set the macros to use in the editor
         macroService.loadDefault();
     }
@@ -27,22 +35,28 @@ export class ExampleComponent {
     inputChanged(event: ValueEvent) {
         this.valid = !event.error;
         this.value = event.xpath;
-        console.log(this.extractinator.extract(event.xpath));
+        console.log(this.extractinatorService.extract(event.xpath));
     }
 }
 ```
+
+Embeds an editor:
 
 ```html
 <lx-editor [value]="value" (onChange)="inputChanged($event)" autofocus="true"></lx-editor>
 ```
 
-Use the `LassyXPathParserService` for parsing/validating a LassyXPath.
+Use the `ParserService` for parsing/validating a LASSY XML XPath.
 
 ## JQuery
+
+Make sure the following scss is included:
 
 ```scss
 @import 'lassy-xpath/scss/xpath-editor';
 ```
+
+Extend JQuery by importing `lassy-xpath/jquery`.
 
 ```typescript
 import 'lassy-xpath/jquery';

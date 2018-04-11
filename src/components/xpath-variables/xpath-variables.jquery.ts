@@ -1,4 +1,4 @@
-import { PathVariable, XPathExtractinator, FormatError } from '../../services/xpath-extractinator';
+import { PathVariable, Extractinator, FormatError } from '../../services/extractinator';
 import * as $ from 'jquery';
 import { BehaviorSubject, Observable } from 'rxjs'
 import { XPathModels } from 'ts-xpath';
@@ -6,7 +6,7 @@ import { XPathModels } from 'ts-xpath';
 export class XPathVariablesRenderer {
     private view: View;
     private source: JQuery;
-    private extractinator: XPathExtractinator;
+    private extractinator: Extractinator;
 
     private subject: BehaviorSubject<string> = new BehaviorSubject<string>('');
     private variables = this.subject.debounceTime(50).map(xpath => this.extract(xpath)).filter(variables => variables != null);
@@ -25,7 +25,7 @@ export class XPathVariablesRenderer {
         this.update();
         this.source.on('change keyup', evt => this.update());
 
-        this.extractinator = new XPathExtractinator();
+        this.extractinator = new Extractinator();
     }
 
     private update() {
