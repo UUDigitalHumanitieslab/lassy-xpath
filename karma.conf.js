@@ -2,7 +2,7 @@
 // https://karma-runner.github.io/1.0/config/configuration-file.html
 var webpackConfig = require('./webpack.conf');
 module.exports = function (config) {
-    config.set({
+    let configuration = {
         basePath: '',
         frameworks: ['jasmine', 'es6-shim', 'karma-typescript'],
         files: ['src/**/*.ts'],
@@ -37,7 +37,19 @@ module.exports = function (config) {
         colors: true,
         logLevel: config.LOG_INFO,
         autoWatch: true,
-        browsers: ['Chrome'],
+        browsers: ['ChromeHeadless'],
+        customLaunchers: {
+            Chrome_travis_ci: {
+                base: 'Chrome',
+                flags: ['--no-sandbox']
+            }
+        },
         singleRun: false
-    });
+    };
+
+    if (process.env.TRAVIS) {
+        configuration.browsers = ['Chrome_travis_ci'];
+    }
+
+    config.set(configuration);
 };
