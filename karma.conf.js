@@ -1,24 +1,3 @@
-// //var webpackConfig = require('./webpack.config');
-
-// module.exports = function (config) {
-//     config.set({
-//         basePath: '',
-//         frameworks: ['jasmine', 'es6-shim'],
-//         files: ['src/**/*.spec.ts'],
-//         preprocessors: {
-//             'src/**/*.spec.ts': ['webpack']
-//         },
-//         webpack: {
-//             module: webpackConfig.module,
-//             resolve: webpackConfig.resolve,
-//             node: webpackConfig.node
-//         },
-//         reporters: ['progress'],
-//         browsers: ['PhantomJS'],
-//         autoWatch: false,
-//         singleRun: true
-//     });
-// }
 // Karma configuration file, see link for more information
 // https://karma-runner.github.io/1.0/config/configuration-file.html
 var webpackConfig = require('./webpack.conf');
@@ -38,8 +17,7 @@ module.exports = function (config) {
             require('karma-jasmine-html-reporter'),
             require('karma-typescript'),
             require('karma-coverage-istanbul-reporter'),
-            require('karma-webpack'),
-            // require('@angular/cli/plugins/karma')
+            require('karma-webpack')
         ],
         client: {
             clearContext: false // leave Jasmine Spec Runner output visible in browser
@@ -48,9 +26,6 @@ module.exports = function (config) {
             reports: ['html', 'lcovonly'],
             fixWebpackSourcePaths: true
         },
-        //   angularCli: {
-        //     environment: 'dev'
-        //   },
         webpack: {
             mode: 'development',
             module: webpackConfig.module,
