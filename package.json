@@ -8,7 +8,8 @@
         "build": "npm run build:ngc && npm run build:copyfiles",
         "build:ngc": "ngc",
         "build:copyfiles": "copyfiles -u 2 dist/src/**/**/**/**/* .",
-        "test": "karma start karma.conf.js"
+        "clean": "git clean -xdf -e node_modules",
+        "test": "karma start karma.conf.js --single-run"
     },
     "repository": {
         "type": "git",
