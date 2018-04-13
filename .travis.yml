@@ -7,7 +7,6 @@ before_install:
   - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
 node_js:
   - "node"
-  - "iojs"
   - "8"
   - "7"
   - "lts/*"
@@ -16,4 +15,3 @@ cache:
 before_script:
   - "sudo chown root /opt/google/chrome/chrome-sandbox"
   - "sudo chmod 4755 /opt/google/chrome/chrome-sandbox"
-  
