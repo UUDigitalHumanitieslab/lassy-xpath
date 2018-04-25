@@ -6,7 +6,7 @@ import { ParserService, MacroService } from '../../services/_ng';
 
 @Component({
     selector: 'lx-editor',
-    template: `<div #container></div><p class="error-message">{{errorMessage}}</p>`,
+    template: `<div #container [style.width]="width"></div><p class="error-message">{{errorMessage}}</p>`,
     styles: [
         `.error-message {
             color: #d54a4a;
@@ -25,6 +25,9 @@ export class XPathEditorComponent extends XPathEditor implements OnDestroy, OnIn
 
     @Input()
     public value: string;
+
+    @Input()
+    public width: string = "500px";
 
     @Output()
     public onChange = new EventEmitter<ValueEvent>();
