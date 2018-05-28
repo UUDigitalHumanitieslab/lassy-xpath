@@ -60,7 +60,7 @@ export let XpathAttributes: { [name: string]: XPathAttribute } = {
             ['top', ''],
             ['whrel', 'relative clause with embedded antecedent'],
             ['whsub', 'embedded question'],
-            ['whq', 'WH-question'],            
+            ['whq', 'WH-question'],
             ['--', '']
         ]
     },
@@ -348,7 +348,7 @@ export let XpathAttributes: { [name: string]: XPathAttribute } = {
             ['punct', 'Punctuation'],
             ['tag', ''],
             ['verb', 'Verb'],
-            ['vg', 'Conjunction'],            
+            ['vg', 'Conjunction'],
             ['- -', 'Not analyzed'],
             ['UNKNOWN', 'Parse problem']
         ]
@@ -757,7 +757,8 @@ export let XpathAttributes: { [name: string]: XPathAttribute } = {
             ['svp', 'separable verb particle'],
             ['tag', 'discourse tag'],
             ['vc', 'verbal complement'],
-            ['whd', 'head of wh-question']            
+            ['whd', 'head of wh-question'],
+            ['--', ''],
         ]
     },
     'rnum': { description: '', values: [] },
