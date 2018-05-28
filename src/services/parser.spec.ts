@@ -42,6 +42,11 @@ describe("XPath Parser Service", () => {
             { startLine: 0, lastLine: 0, startColumn: 29, lastColumn: 34, message: 'Unknown attribute value "bar"' }]);
     });
 
+    it('Formats', () => {
+        expect(parserService.format('//node[@foo and node[@bar or @id="42"]]')).toEqual(`//node[@foo and
+    node[@bar or @id="42"]]`);
+    });
+
     function expectWarnings(xpath: string, expectedWarnings: ParseMessage[]) {
         let parsed = parserService.parse(xpath);
         expect(parsed.expression).toBeTruthy(`Parse failed: ${xpath}`);

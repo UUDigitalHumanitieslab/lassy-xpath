@@ -40,6 +40,32 @@ export class Parser {
         }
     }
 
+    /**
+     * Formats an xpath (add indentation and newlines).
+     * @param xpath The xpath to format.
+     * @param indentSize The indentation size of each step.
+     * @param indentCount The zero-based count of the current level of indentation.
+     */
+    public format(xpath: string, indentSize = 4, indentCount = 0) {
+        let index = xpath.search(/(?<![\/:])node/);
+        if (index == -1) {
+            return xpath;
+        }
+
+        let preceding = xpath.substring(0, index);
+        for (let c of preceding) {
+            if (c == '[') {
+                indentCount++;
+            } else if (c == ']') {
+                indentCount--;
+            }
+        }
+
+        let tail = xpath.substring(index + 4);
+
+        return `${preceding.replace(/ +$/, '')}\n${' '.repeat(indentCount * indentSize)}node${this.format(tail, indentSize, indentCount)}`;
+    }
+
     private createWarning(message: string, location: XPathModels.ParseLocation, offset = -1): ParseMessage {
         return {
             startLine: location.firstLine - 1,
