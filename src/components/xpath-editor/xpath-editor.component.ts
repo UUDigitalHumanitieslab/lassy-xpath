@@ -46,7 +46,7 @@ export class XPathEditorComponent extends XPathEditor implements OnDestroy, OnIn
     }
 
     ngOnInit() {
-        this.initialize(this.container.nativeElement, this.autofocus || false, this.value);
+        this.initialize(this.container.nativeElement, this.autofocus || false, this.value || '');
         this.subscriptions = [
             this.valueObservable.subscribe(value => {
                 this.value = value;
