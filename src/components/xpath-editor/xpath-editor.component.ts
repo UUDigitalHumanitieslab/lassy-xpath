@@ -21,10 +21,10 @@ export class XPathEditorComponent extends XPathEditor implements OnDestroy, OnIn
     public container: ElementRef;
 
     @Input()
-    public autofocus: boolean;
+    public autofocus: boolean = false;
 
     @Input()
-    public value: string;
+    public value: string = '';
 
     @Input()
     public width: string = "500px";
