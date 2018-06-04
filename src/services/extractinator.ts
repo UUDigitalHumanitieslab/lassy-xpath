@@ -8,7 +8,7 @@ export class Extractinator {
     }
 
     /**
-     * Extract a variable for each node matched by the query.
+     * Extracts a variable for each node matched by the query.
      * @param xPath Query to analyse.
      * @throws {XPathModels.ParseError} The provided query is malformed.
      * @throws {FormatError} The provided query is in an unexpected format.
@@ -38,6 +38,29 @@ export class Extractinator {
         return [];
     }
 
+    /**
+     * Annotates the xpath and marks parts referencing any of the passed variables.
+     * @param xPath 
+     * @param variables 
+     */
+    annotate(xPath: string, variables: PathVariable[]) {
+        let annotated = this.parser.annotate(xPath);
+        let result: { token: XPathModels.XPathToken, variable: PathVariable | null }[] = [];
+
+        for (let token of annotated) {
+            let variable: PathVariable | null = null;
+            if (token.type == 'node.name' && token.expression.properties.name == 'node') {
+                // expect any query to at least start with //node            
+                let location = getLocation(token.expression.properties.location);
+                variable = variables.find(v => location.equals(v.location));
+            }
+
+            result.push({ token, variable });
+        }
+
+        return result;
+    }
+
     private extractRecursively(parentName: string, children: XPathModels.XPathExpression[], nameGenerator: () => string): PathVariable[] {
         let result: PathVariable[] = [];
 
@@ -45,7 +68,7 @@ export class Extractinator {
             switch (child.type) {
                 case "path":
                     // this is a level below the parent e.g. $parent/*
-                    let name = nameGenerator();                    
+                    let name = nameGenerator();
 
                     for (let step of child.steps) {
                         if (step.properties.axis == 'child') {
@@ -90,18 +113,17 @@ export interface PathVariable {
     location: Location
 }
 
-export interface Location {
-    line: number,
-    firstColumn: number,
-    lastColumn: number
+export class Location {
+    constructor(public line: number, public firstColumn: number, public lastColumn: number) {
+    }
+
+    equals(location: Location) {
+        return this.line == location.line && this.firstColumn == location.firstColumn && this.lastColumn == location.lastColumn;
+    }
 }
 
 function getLocation(location: XPathModels.ParseLocation): Location {
-    return {
-        line: location.firstLine,
-        firstColumn: location.firstColumn,
-        lastColumn: location.lastColumn
-    };
+    return new Location(location.firstLine, location.firstColumn, location.lastColumn);
 }
 
 class NameGenerator {

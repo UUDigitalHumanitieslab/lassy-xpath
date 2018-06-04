@@ -1,4 +1,4 @@
-import { Extractinator, PathVariable } from './extractinator';
+import { Extractinator, Location, PathVariable } from './extractinator';
 import { XPathModels } from 'ts-xpath';
 
 describe("XPath Extractinator",
@@ -73,23 +73,36 @@ describe("XPath Extractinator",
         });
 
         let location = (column: number, line: number = 1, length: number = 4) => {
-            return {
-                line,
-                firstColumn: column,
-                lastColumn: column + length
-            };
+            return new Location(line, column, column + length);
         }
 
-        let expectExtract = (xpath: string, expected: PathVariable[], checkOrdered: boolean = true, hasRoot = true) => {
+        let expectExtract = (xpath: string, expectedPaths: PathVariable[], checkOrdered: boolean = true, hasRoot = true) => {
             let rootNode = { name: '$node', path: '*', location: location(2) };
-            let result = extractinator.extract(xpath);
-            expect(result).toEqual(hasRoot ? [rootNode].concat(expected) : expected, xpath);
+            let actualPaths = extractinator.extract(xpath);
+            expect(actualPaths).toEqual(hasRoot ? [rootNode].concat(expectedPaths) : expectedPaths, xpath);
             let subPath = xpath.substring('//node['.length, xpath.length - 1);
+
+            if (actualPaths.length) {
+                // check whether the annotation works
+                let annotated = extractinator.annotate(xpath, actualPaths);
+                expect(annotated.map(a => a.token.text).join('')).toEqual(xpath, "Annotation should return the precise input.");
+                let missingPaths = actualPaths.concat([]);
+                for (let token of annotated) {
+                    if (token.variable) {
+                        let index = missingPaths.findIndex(t => t == token.variable);
+                        if (index == -1) {
+                            fail();
+                        }
+                        missingPaths.splice(index, 1);
+                    }
+                }
+                expect(missingPaths).toEqual([], "Paths missing!");
+            }
 
             if (checkOrdered) {
                 xpath = `//node[@cat="smain" and not(.//node[position() < last()][number(@begin) > number(following-sibling::node/@begin)]) and ${subPath}]`;
                 let orderedResult = extractinator.extract(xpath);
-                expect(orderedResult).toEqual((hasRoot ? [rootNode] : []).concat(expected.map(variable => {
+                expect(orderedResult).toEqual((hasRoot ? [rootNode] : []).concat(expectedPaths.map(variable => {
                     return {
                         name: variable.name,
                         path: variable.path,
