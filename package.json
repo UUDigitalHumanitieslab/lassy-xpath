@@ -10,7 +10,8 @@
         "build:ngc": "ngc",
         "build:copyfiles": "copyfiles -u 2 dist/src/**/**/**/**/* .",
         "clean": "git clean -xdf -e node_modules",
-        "test": "karma start karma.conf.js --single-run"
+        "test": "karma start karma.conf.js --single-run",
+        "test:watch": "karma start karma.conf.js"
     },
     "repository": {
         "type": "git",

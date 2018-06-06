@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 
 import { XPathEditorComponent } from './components/_ng';
-import { ParserService, MacroService, ExtractinatorService } from './services/_ng';
+import { ParserService, MacroService, ExtractinatorService, ReconstructorService } from './services/_ng';
 
 const declarations = [XPathEditorComponent];
 @NgModule({
@@ -10,7 +10,8 @@ const declarations = [XPathEditorComponent];
     providers: [
         ParserService,
         MacroService,
-        ExtractinatorService
+        ExtractinatorService,
+        ReconstructorService
     ]
 })
 export class LassyXPathModule {
