@@ -47,7 +47,7 @@ export class Parser {
      * @param indentCount The zero-based count of the current level of indentation.
      */
     public format(xpath: string, indentSize = 4, indentCount = 0): string {
-        let index = xpath.search(/(?<![\/:])node/);
+        let index = xpath.search(new RegExp('(?<![\/:])node'));
         if (index == -1) {
             return xpath;
         }
