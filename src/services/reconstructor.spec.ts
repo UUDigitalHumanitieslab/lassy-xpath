@@ -11,7 +11,12 @@ describe("XPath Reconstruction",
         })
 
         it("Ignores empty input", () => {
-            expectReconstruct('<node></node>', []);
+            expectReconstruct('', []);
+        });
+
+        it("Get parent's attributes (if set)", () => {
+            expectReconstruct(`<node varName="$node" pt="vnw">
+</node>`, [{ name: '$node', path: '*' }], '//node[@pt="vnw"]');
         });
 
         it("Constructs root", () => {
@@ -77,19 +82,19 @@ describe("XPath Reconstruction",
 </node>`,
                 [{ name: '$node', path: '*' },
                 { name: '$node1', path: '$node/node[@pt = "lid"]' },
-                { name: '$node2', path: '$node/node[@pt = "vnw" and number(@begin) > 5]'}]);
+                { name: '$node2', path: '$node/node[@pt = "vnw" and number(@begin) > 5]' }]);
         });
 
         let location = (column: number, line: number = 1, length: number = 4) => {
             return new Location(line, column, column + length);
         }
 
-        let expectReconstruct = (expectedXml: string, inputPaths: { name: string, path: string }[]) => {
+        let expectReconstruct = (expectedXml: string, inputPaths: { name: string, path: string }[], query?: string) => {
             let actualXml = reconstructor.construct(inputPaths.map(path => {
                 // location is ignored
                 return Object.assign({ location: location(0) }, path)
-            }));
+            }), query);
 
-            expect(actualXml).toEqual(expectedXml);
+            expect(actualXml).toEqual('<node cat="top">' + expectedXml + '</node>');
         }
     });

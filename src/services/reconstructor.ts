@@ -14,16 +14,17 @@ export class Reconstructor {
     /**
      * Reconstructs a minimal tree matching the specified variables
      * @param variables The variables to analyse
+     * @param variables The xpath to extract the root's properties from
      * @returns An XML node structure
      */
-    construct(variables: PathVariable[]): string {
+    construct(variables: PathVariable[], xpath: string = null): string {
         if (!variables || variables.length == 0) {
-            return '<node></node>';
+            return '<node cat="top"></node>';
         }
 
         let index: { [name: string]: Node } = {};
         for (let variable of variables) {
-            index[variable.name] = { children: [], variable };
+            index[variable.name] = { children: [], variable: Object.assign({}, variable) };
         }
 
         // determine the children
@@ -41,7 +42,11 @@ export class Reconstructor {
             parent.children.push(index[variable.name]);
         }
 
-        return this.constructRecursively(index['$node']).join('\n');
+        if (xpath != null) {
+            index['$node'].variable.path = xpath.substring(1); // assuming it starts with //
+        }
+
+        return '<node cat="top">' + this.constructRecursively(index['$node']).join('\n') + '</node>';
     }
 
     private constructRecursively(node: Node, level = 0) {
