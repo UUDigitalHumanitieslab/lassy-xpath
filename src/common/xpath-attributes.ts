@@ -1,5 +1,6 @@
 // based on https://www.let.rug.nl/vannoord/Lassy/sa-man_lassy.pdf, http://www.let.rug.nl/vannoord/alp/Alpino/adt.html,
 // https://www.let.rug.nl/vannoord/Lassy/alpino_ds.dtd and https://github.com/rug-compling/paqu/blob/master/src/pqserve/attributes.txt
+// http://gretel.ccl.kuleuven.be/project/php/TreebankFreqsLASSY.html
 export type XPathAttribute = {
     description: string,
     /**
@@ -34,7 +35,7 @@ export let XpathAttributes: { [name: string]: XPathAttribute } = {
         ]
     },
     'cat': {
-        description: 'Category',
+        description: 'Phrasal category',
         values: [
             ['ap', 'adjective phrase'],
             ['advp', 'adverb phrase'],
@@ -342,7 +343,7 @@ export let XpathAttributes: { [name: string]: XPathAttribute } = {
             ['noun', 'Noun'],
             ['num', 'Number'],
             ['part', 'Particle'],
-            ['pp', ''],
+            ['pp', 'Pronominal adverb'],
             ['pron', 'Pronoun'],
             ['prep', 'Preposition'],
             ['punct', 'Punctuation'],
@@ -691,20 +692,20 @@ export let XpathAttributes: { [name: string]: XPathAttribute } = {
     },
     'pron': { description: '', values: [] },
     'pt': {
-        description: '',
+        description: 'POS value (LASSY)',
         values: [
-            ['let', ''],
-            ['spec', ''],
-            ['bw', ''],
-            ['vg', ''],
-            ['lid', ''],
-            ['vnw', ''],
-            ['tw', ''],
-            ['ww', ''],
-            ['adj', ''],
-            ['n', ''],
-            ['tsw', ''],
-            ['vz', '']
+            ['let', 'Punctuation'],
+            ['spec', 'Special'],
+            ['bw', 'Adverb'],
+            ['vg', 'Conjunction'],
+            ['lid', 'Article'],
+            ['vnw', 'Pronoun'],
+            ['tw', 'Numeral'],
+            ['ww', 'Verb'],
+            ['adj', 'Adjective'],
+            ['n', 'Noun'],
+            ['tsw', 'Interjection'],
+            ['vz', 'Preposition']
         ]
     },
     'pvagr': {
@@ -758,7 +759,7 @@ export let XpathAttributes: { [name: string]: XPathAttribute } = {
             ['tag', 'discourse tag'],
             ['vc', 'verbal complement'],
             ['whd', 'head of wh-question'],
-            ['--', ''],
+            ['--', 'child of a \'top\' node'],
         ]
     },
     'rnum': { description: '', values: [] },
