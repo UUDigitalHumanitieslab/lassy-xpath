@@ -12,6 +12,7 @@ module.exports = function (config) {
         mime: { 'text/x-typescript': ['ts', 'tsx'] },
         plugins: [
             require('karma-jasmine'),
+            require('karma-jquery'),
             require('karma-es6-shim'),
             require('karma-chrome-launcher'),
             require('karma-jasmine-html-reporter'),

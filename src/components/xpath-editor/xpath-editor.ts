@@ -1,15 +1,12 @@
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/distinctUntilKeyChanged';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { debounceTime, distinctUntilKeyChanged, map } from 'rxjs/operators';
 
 import * as ace from 'brace';
 import { modeName as xpathModeName, Completer } from './xpath-mode';
 import 'brace/ext/language_tools';
 import 'brace/theme/dawn';
 import { Macro } from '../../services/macro';
-import { ParseMessage, Parser } from '../../services/parser';
+import { ParseMessage, Parser, ParsedXPath } from '../../services/parser';
 
 let AceRange = ace.acequire('ace/range').Range;
 
@@ -26,10 +23,10 @@ export class XPathEditor {
 
     private beforeEnrich: string = null;
 
-    public valueObservable = this.valueSubject.asObservable();
-    public errorMessageObservable = this.errorMessageSubject.asObservable();
+    public valueObservable: Observable<string> = this.valueSubject.asObservable();
+    public errorMessageObservable: Observable<string> = this.errorMessageSubject.asObservable();
 
-    private parsedObservable = this.valueSubject.debounceTime(50).map(xpath => {
+    private parsedObservable: Observable<ParsedXPath> = this.valueSubject.pipe(debounceTime(50), map(xpath => {
         if (this.macroServiceLoaded &&
             (xpath != this.beforeEnrich ||
                 !this.session.getUndoManager().hasRedo())) {
@@ -49,7 +46,7 @@ export class XPathEditor {
         }
 
         return this.xpathParserService.parse(xpath);
-    });
+    }));
 
     constructor(private xpathParserService: Parser, private macroService: Macro) {
         this.macroService.onceLoaded.then(() => {
@@ -101,14 +98,15 @@ export class XPathEditor {
      */
     private showErrors() {
         this.parsedObservable
-            .map(parsed => {
-                return {
-                    value: parsed,
-                    key: (parsed.error ? parsed.error.startLine + parsed.error.message : '')
-                        + (parsed.warnings ? parsed.warnings.map(w => w.startLine + w.message).join('') : '')
-                }
-            })
-            .distinctUntilKeyChanged('key')
+            .pipe(
+                map(parsed => {
+                    return {
+                        value: parsed,
+                        key: (parsed.error ? parsed.error.startLine + parsed.error.message : '')
+                            + (parsed.warnings ? parsed.warnings.map(w => w.startLine + w.message).join('') : '')
+                    }
+                }),
+                distinctUntilKeyChanged('key'))
             .subscribe(parsed => {
                 if (parsed.value.error) {
                     this.showErrorMessage(parsed.value.error);

@@ -1,6 +1,7 @@
 import { PathVariable, Extractinator, FormatError } from '../../services/extractinator';
 import * as $ from 'jquery';
-import { BehaviorSubject, Observable } from 'rxjs'
+import { BehaviorSubject } from 'rxjs'
+import { debounceTime, map, filter } from 'rxjs/operators';
 import { XPathModels } from 'ts-xpath';
 
 export class XPathVariablesRenderer {
@@ -9,7 +10,10 @@ export class XPathVariablesRenderer {
     private extractinator: Extractinator;
 
     private subject: BehaviorSubject<string> = new BehaviorSubject<string>('');
-    private variables = this.subject.debounceTime(50).map(xpath => this.extract(xpath)).filter(variables => variables != null);
+    private variables = this.subject.pipe(
+        debounceTime(50),
+        map(xpath => this.extract(xpath)),
+        filter(variables => variables != null));
 
     constructor(element: HTMLElement, source: string | JQuery, formName: string) {
         let $element = $(element);

@@ -1,4 +1,4 @@
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import * as $ from 'jquery';
 import { XPathEditor } from './xpath-editor';
 import { MacroService, Parser } from '../../services/_jquery';
