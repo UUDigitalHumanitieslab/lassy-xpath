@@ -6,7 +6,7 @@ Module for working with XPATH queries on [LASSY XML](https://www.let.rug.nl/vann
 
 ## Angular 2+
 
-(Only tested in Angular 5)
+(Only tested in Angular 6)
 
 Import the module:
 
