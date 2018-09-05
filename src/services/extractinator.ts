@@ -68,14 +68,28 @@ export class Extractinator {
             switch (child.type) {
                 case "path":
                     // this is a level below the parent e.g. $parent/*
-                    let name = nameGenerator();
 
                     for (let step of child.steps) {
-                        if (step.properties.axis == 'child') {
-                            result.push({ name, path: `${parentName}/${child.toXPath()}`, location: getLocation(step.properties.location) });
-                            result.push(...this.extractRecursively(name, step.predicates, nameGenerator));
-                        } else {
-                            throw new FormatError('axis_type', [step.properties.axis]);
+                        switch (step.properties.axis) {
+                            case 'child':
+                                let name = nameGenerator();
+                                result.push({
+                                    name,
+                                    path: `${parentName}/${child.toXPath()}`,
+                                    location: getLocation(step.properties.location)
+                                });
+                                result.push(...this.extractRecursively(name, step.predicates, nameGenerator));
+                                break;
+
+                            case 'attribute':
+                                // We are only interested in nodes, 
+                                // an attribute shouldn't be returned as
+                                // a separate path.
+                                break;
+
+                            default:
+                                console.error(`Unknown axis type ${step.properties.axis}`);
+                                throw new FormatError('axis_type', [step.properties.axis]);
                         }
                     }
 
