@@ -50,6 +50,41 @@ describe("XPath Extractinator",
             }]);
         });
 
+        it("Extracts attributes without value", () => {
+            expectExtract('//node[node[@pt and @rel]]', [{
+                name: '$node1',
+                path: '$node/node[@pt and @rel]',
+                location: location(7)
+            }]);
+
+            expectExtract('//node[node[@pt and @rel or node[@cat]]]', [{
+                name: '$node1',
+                path: '$node/node[@pt and @rel or node[@cat]]',
+                location: location(7)
+            }, {
+                name: '$node2',
+                path: '$node1/node[@cat]',
+                location: location(28)
+            }]);
+        });
+
+        it("Extracts double predicates", () => {
+            expectExtract('//node[@rel="obj1"][node[@rel="su"]]', [{
+                name: '$node1',
+                path: '$node/node[@rel = "su"]',
+                location: location(20)
+            }]);
+            expectExtract('//node[@rel="obj1"][node[@rel="su"][node[@cat and @pt]]]', [{
+                name: '$node1',
+                path: '$node/node[@rel = "su"][node[@cat and @pt]]',
+                location: location(20)
+            }, {
+                name: '$node2',
+                path: '$node1/node[@cat and @pt]',
+                location: location(36)
+            }]);
+        });
+
         it("Extracts multiple children", () => {
             expectExtract(
                 '//node[@cat="smain" and node and node[@cat="np"]]',
