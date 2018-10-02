@@ -1,4 +1,3 @@
-import * as XRegExp from 'xregexp';
 import { XpathAttributes } from '../common/xpath-attributes';
 import { XPathModels, XPathParser } from 'ts-xpath';
 
@@ -48,11 +47,17 @@ export class Parser {
      * @param indentCount The zero-based count of the current level of indentation.
      */
     public format(xpath: string, indentSize = 4, indentCount = 0): string {
-        // match nodes without a preceding axis
-        let index = xpath.search(XRegExp('(?<![\/:])node'));
-        if (index == -1) {
+        let match = xpath.match(/(^|.)node/);
+        if (!match) {
             return xpath;
         }
+        if (match[1] == '/' || match[1] == ':') {
+            // don't indent nodes with a preceding axis, done without
+            // lookbehind to support more browsers
+            const end = match.index + match[0].length;
+            return xpath.substring(0, end) + this.format(xpath.substring(end), indentSize, indentCount);
+        }
+        let index = match.index + match[1].length;
 
         let preceding = xpath.substring(0, index);
         for (let c of preceding) {
