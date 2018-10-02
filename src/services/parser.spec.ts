@@ -45,6 +45,15 @@ describe("XPath Parser Service", () => {
     it('Formats', () => {
         expect(parserService.format('//node[@foo and node[@bar or @id="42"]]')).toEqual(`//node[@foo and
     node[@bar or @id="42"]]`);
+        expect(parserService.format(`//node[@cat="top" and node[@rel="--" and @cat="smain" and node[@pt="vnw" and @rel="su" and number(@begin) < ../node[@pt="ww" and @rel="hd"]/number(@begin)] and node[@pt="ww" and @rel="hd" and number(@begin) < ../node[@rel="predc" and @cat="np"]/node[@rel="det" and @pt="lid"]/number(@begin)] and node[@rel="predc" and @cat="np" and node[@rel="det" and @pt="lid" and number(@begin) < ../node[@rel="hd" and @pt="n"]/number(@begin)] and node[@rel="hd" and @pt="n" and number(@begin) < ../../../node[@rel="--" and @pt="let"]/number(@begin)]]] and node[@rel="--" and @pt="let"]]`))
+            .toEqual(`//node[@cat="top" and
+    node[@rel="--" and @cat="smain" and
+        node[@pt="vnw" and @rel="su" and number(@begin) < ../node[@pt="ww" and @rel="hd"]/number(@begin)] and
+        node[@pt="ww" and @rel="hd" and number(@begin) < ../node[@rel="predc" and @cat="np"]/node[@rel="det" and @pt="lid"]/number(@begin)] and
+        node[@rel="predc" and @cat="np" and
+            node[@rel="det" and @pt="lid" and number(@begin) < ../node[@rel="hd" and @pt="n"]/number(@begin)] and
+            node[@rel="hd" and @pt="n" and number(@begin) < ../../../node[@rel="--" and @pt="let"]/number(@begin)]]] and
+    node[@rel="--" and @pt="let"]]`)
     });
 
     function expectWarnings(xpath: string, expectedWarnings: ParseMessage[]) {

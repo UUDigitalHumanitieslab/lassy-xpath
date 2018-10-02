@@ -51,14 +51,8 @@ export class Parser {
         if (!match) {
             return xpath;
         }
-        if (match[1] == '/' || match[1] == ':') {
-            // don't indent nodes with a preceding axis, done without
-            // lookbehind to support more browsers
-            const end = match.index + match[0].length;
-            return xpath.substring(0, end) + this.format(xpath.substring(end), indentSize, indentCount);
-        }
-        let index = match.index + match[1].length;
 
+        let index = match.index + match[1].length;
         let preceding = xpath.substring(0, index);
         for (let c of preceding) {
             if (c == '[') {
@@ -66,6 +60,13 @@ export class Parser {
             } else if (c == ']') {
                 indentCount--;
             }
+        }
+
+        if (match[1] == '/' || match[1] == ':') {
+            // don't indent nodes with a preceding axis, done without
+            // lookbehind to support more browsers
+            const end = match.index + match[0].length;
+            return xpath.substring(0, end) + this.format(xpath.substring(end), indentSize, indentCount);
         }
 
         let tail = xpath.substring(index + 4);
