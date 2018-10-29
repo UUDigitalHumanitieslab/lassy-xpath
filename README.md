@@ -1,8 +1,8 @@
 [![Build Status](https://travis-ci.org/UUDigitalHumanitieslab/lassy-xpath.svg?branch=develop)](https://travis-ci.org/UUDigitalHumanitieslab/lassy-xpath)
 
-## Lassy XPATH
+## LASSY XPath
 
-Module for working with XPATH queries on [LASSY XML](https://www.let.rug.nl/vannoord/Lassy/) files. It includes a graphical editor including auto completion, macros and validation based on [Ace](https://ace.c9.io/), a parser and validator based on [ts-xpath](https://github.com/UUDigitalHumanitieslab/ts-xpath) and an "extractinator" for determining XPATHs to get each node from the returned tree separately. It also has a "reconstructor" to create an XML structure representing the query tree. The functionality can be used as an Angular module, using JQuery or as plain JavaScript.
+Module for working with XPath queries on [LASSY XML](https://www.let.rug.nl/vannoord/Lassy/) files. It includes a graphical editor including auto completion, macros and validation based on [Ace](https://ace.c9.io/), a parser and validator based on [ts-xpath](https://github.com/UUDigitalHumanitieslab/ts-xpath) and an "extractinator" for determining XPaths to get each node from the returned tree separately. It also has a "reconstructor" to create an XML structure representing the query tree. The functionality can be used as an Angular module, using JQuery or as plain JavaScript.
 
 ## Angular 2+
 
