@@ -81,6 +81,10 @@ export class Extractinator {
                                 result.push(...this.extractRecursively(name, step.predicates, nameGenerator));
                                 break;
 
+                            case 'parent':
+                                result.push(...this.extractRecursively(name, step.predicates, nameGenerator));
+                                break;
+
                             case 'attribute':
                                 // We are only interested in nodes, 
                                 // an attribute shouldn't be returned as
