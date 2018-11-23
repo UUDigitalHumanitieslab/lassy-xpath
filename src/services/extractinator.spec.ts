@@ -1,25 +1,24 @@
 import { Extractinator, Location, PathVariable } from './extractinator';
 import { XPathModels } from 'ts-xpath';
 
-describe("XPath Extractinator",
+describe('XPath Extractinator',
     () => {
         let extractinator: Extractinator;
 
         beforeEach(() => {
             extractinator = new Extractinator();
-        })
+        });
 
-        it("Ignores empty input", () => {
+        it('Ignores empty input', () => {
             expectExtract('', [], false, false);
         });
 
-        it("Ignores malformed input", () => {
+        it('Ignores malformed input', () => {
             let parseError: XPathModels.ParseError | null = null;
             let result: PathVariable[] | null = null;
             try {
                 result = extractinator.extract('//node[');
-            }
-            catch (error) {
+            } catch (error) {
                 if (error instanceof XPathModels.ParseError) {
                     parseError = error;
                 }
@@ -29,20 +28,20 @@ describe("XPath Extractinator",
             expect(parseError).toBeTruthy('No ParseError was thrown!');
         });
 
-        it("Extracts root", () => {
+        it('Extracts root', () => {
             // the root is implicit and called $node; it shouldn't be returned as extracted
             expectExtract('//node', [], false);
         });
 
-        it("Ignores parent's attributes", () => {
+        it('Ignores parent\'s attributes', () => {
             expectExtract('//node[@pt="vnw"]', []);
         });
 
-        it("Extracts child", () => {
+        it('Extracts child', () => {
             expectExtract('//node[node]', [{ name: '$node1', path: '$node/node', location: location(7) }]);
         });
 
-        it("Extracts child with attributes", () => {
+        it('Extracts child with attributes', () => {
             expectExtract('//node[node[@pt="vnw" and @rel="su"]]', [{
                 name: '$node1',
                 path: '$node/node[@pt = "vnw" and @rel = "su"]',
@@ -50,7 +49,7 @@ describe("XPath Extractinator",
             }]);
         });
 
-        it("Extracts attributes without value", () => {
+        it('Extracts attributes without value', () => {
             expectExtract('//node[node[@pt and @rel]]', [{
                 name: '$node1',
                 path: '$node/node[@pt and @rel]',
@@ -68,7 +67,7 @@ describe("XPath Extractinator",
             }]);
         });
 
-        it("Extracts double predicates", () => {
+        it('Extracts double predicates', () => {
             expectExtract('//node[@rel="obj1"][node[@rel="su"]]', [{
                 name: '$node1',
                 path: '$node/node[@rel = "su"]',
@@ -85,14 +84,14 @@ describe("XPath Extractinator",
             }]);
         });
 
-        it("Extracts multiple children", () => {
+        it('Extracts multiple children', () => {
             expectExtract(
                 '//node[@cat="smain" and node and node[@cat="np"]]',
                 [{ name: '$node1', path: '$node/node', location: location(24) },
                 { name: '$node2', path: '$node/node[@cat = "np"]', location: location(33) }]);
         });
 
-        it("Extracts sub-children", () => {
+        it('Extracts sub-children', () => {
             expectExtract(
                 '//node[node[node and node[@pt="lid"]]]',
                 [{ name: '$node1', path: '$node/node[node and node[@pt = "lid"]]', location: location(7) },
@@ -100,14 +99,14 @@ describe("XPath Extractinator",
                 { name: '$node3', path: '$node1/node[@pt = "lid"]', location: location(21) }]);
         });
 
-        it("Extracts union", () => {
+        it('Extracts union', () => {
             expectExtract(
                 '//node[node[@pt = "lid"] | node[@pt="vnw" and number(@begin) > 5]]',
                 [{ name: '$node1', path: '$node/node[@pt = "lid"]', location: location(7) },
                 { name: '$node2', path: '$node/node[@pt = "vnw" and number(@begin) > 5]', location: location(27) }]);
         });
 
-        it("Extracts parent paths", () => {
+        it('Extracts all path axes', () => {
             expectExtract(
                 '//node[@pt="n" and @rel="obj1" and ../node[@lemma="eten"]]',
                 [{ name: '$node1', path: '$node/../node[@lemma = "eten"]', location: location(38) }]);
@@ -115,39 +114,53 @@ describe("XPath Extractinator",
                 '//node[@pt="n" and @rel="obj1" and ../node[@cat="np" and node[@pt = "lid"]]]',
                 [{ name: '$node1', path: '$node/../node[@cat = "np" and node[@pt = "lid"]]', location: location(38) },
                 { name: '$node2', path: '$node1/node[@pt = "lid"]', location: location(57) }]);
+
+            expectExtract(
+                '//node[@cat="np" and descendant::node[@pt="let"]]',
+                [{ name: '$node1', path: '$node/descendant::node[@pt = "let"]', location: location(33) }]);
+
+            expectExtract(
+                '//node[@cat="np" and descendant-or-self::node[@pt="let"]]',
+                [{ name: '$node1', path: '$node/descendant-or-self::node[@pt = "let"]', location: location(41) }]);
+
+            expectExtract(
+                '//node[@pt="lid" and following-sibling::node[@cat="np" and node[@pt="n"]]]',
+                [{ name: '$node1', path: '$node/following-sibling::node[@cat = "np" and node[@pt = "n"]]', location: location(40) },
+                { name: '$node2', path: '$node1/node[@pt = "n"]', location: location(59) }]);
         });
 
-        let location = (column: number, line: number = 1, length: number = 4) => {
+        const location = (column: number, line: number = 1, length: number = 4) => {
             return new Location(line, column, column + length);
-        }
+        };
 
-        let expectExtract = (xpath: string, expectedPaths: PathVariable[], checkOrdered: boolean = true, hasRoot = true) => {
-            let rootNode = { name: '$node', path: '*', location: location(2) };
-            let actualPaths = extractinator.extract(xpath);
+        const expectExtract = (xpath: string, expectedPaths: PathVariable[], checkOrdered: boolean = true, hasRoot = true) => {
+            const rootNode = { name: '$node', path: '*', location: location(2) };
+            const actualPaths = extractinator.extract(xpath);
             const expectedPathsMapped = (hasRoot ? [rootNode].concat(expectedPaths) : expectedPaths).map(formatPathVariables);
             expect(actualPaths.map(formatPathVariables)).toEqual(expectedPathsMapped, xpath);
-            let subPath = xpath.substring('//node['.length, xpath.length - 1);
+            const subPath = xpath.substring('//node['.length, xpath.length - 1);
 
             if (actualPaths.length) {
                 // check whether the annotation works
-                let annotated = extractinator.annotate(xpath, actualPaths);
-                expect(annotated.map(a => a.token.text).join('')).toEqual(xpath, "Annotation should return the precise input.");
-                let missingPaths = actualPaths.concat([]);
-                for (let token of annotated) {
+                const annotated = extractinator.annotate(xpath, actualPaths);
+                expect(annotated.map(a => a.token.text).join('')).toEqual(xpath, 'Annotation should return the precise input.');
+                const missingPaths = actualPaths.concat([]);
+                for (const token of annotated) {
                     if (token.variable) {
-                        let index = missingPaths.findIndex(t => t == token.variable);
-                        if (index == -1) {
+                        const index = missingPaths.findIndex(t => t === token.variable);
+                        if (index === -1) {
                             fail();
                         }
                         missingPaths.splice(index, 1);
                     }
                 }
-                expect(missingPaths).toEqual([], "Paths missing!");
+                expect(missingPaths).toEqual([], 'Paths missing!');
             }
 
             if (checkOrdered) {
+                // tslint:disable-next-line:max-line-length
                 xpath = `//node[@cat="smain" and not(.//node[position() < last()][number(@begin) > number(following-sibling::node/@begin)]) and ${subPath}]`;
-                let orderedResult = extractinator.extract(xpath);
+                const orderedResult = extractinator.extract(xpath);
                 expect(orderedResult.map(formatPathVariables)).toEqual((hasRoot ? [rootNode] : []).concat(expectedPaths.map(variable => {
                     return {
                         name: variable.name,
@@ -156,7 +169,7 @@ describe("XPath Extractinator",
                     };
                 })).map(formatPathVariables), xpath);
             }
-        }
+        };
 
         function formatPathVariables(path: PathVariable) {
             return `${path.name} := ${path.path} (${path.location.line}:${path.location.firstColumn}-${path.location.lastColumn})`;
