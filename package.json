@@ -1,6 +1,6 @@
 {
     "name": "lassy-xpath",
-    "version": "0.3.5",
+    "version": "0.3.6",
     "description": "XPath format and editor for searching LASSY XML files",
     "main": "index.js",
     "types": "index.d.ts",
