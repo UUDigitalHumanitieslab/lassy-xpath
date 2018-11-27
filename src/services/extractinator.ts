@@ -84,13 +84,14 @@ export class Extractinator {
                                 break;
 
                             case 'parent':
-                                // A parent could either be represented by a step with predicates for the node, or
-                                // a subsequent (child) step in the current PathPathExpr.
+                                // A parent could either be represented by a step with predicates for the node
+                                // (axis specifier) e.g. parent::node, or a subsequent (child) step in the current
+                                // PathPathExpr.
                                 if (step.predicates.length) {
                                     const name = nameGenerator();
                                     result.push({
                                         name,
-                                        path: `${parentName}/../node${
+                                        path: `${parentName}/../../node${
                                             step.predicates.map(p => `[${p.toXPath()}]`).join()}`,
                                         location: getLocation(step.properties.location)
                                     });

@@ -134,11 +134,11 @@ describe('XPath Extractinator',
                 @rel="obj1" and parent::node[@lemma="eten"])]`,
                 [{
                     name: '$node1',
-                    path: '$node/../node[@rel = "obj1" and ../node[@lemma = "eten" and @rel = "hd"]]',
+                    path: '$node/../../node[@rel = "obj1" and ../node[@lemma = "eten" and @rel = "hd"]]',
                     location: location(40, 2)
                 },
                 { name: '$node2', path: '$node1/../node[@lemma = "eten" and @rel = "hd"]', location: location(64, 2) },
-                { name: '$node3', path: '$node/../node[@lemma = "eten"]', location: location(40, 3) }]);
+                { name: '$node3', path: '$node/../../node[@lemma = "eten"]', location: location(40, 3) }]);
         });
 
         const location = (column: number, line: number = 1, length: number = 4) => {
