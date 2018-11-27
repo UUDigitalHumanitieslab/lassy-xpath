@@ -84,7 +84,19 @@ export class Extractinator {
                                 break;
 
                             case 'parent':
-                                result.push(...this.extractRecursively(name, step.predicates, nameGenerator));
+                                // A parent could either be represented by a step with predicates for the node, or
+                                // a subsequent (child) step in the current PathPathExpr.
+                                if (step.predicates.length) {
+                                    const name = nameGenerator();
+                                    result.push({
+                                        name,
+                                        path: `${parentName}/../node${
+                                            step.predicates.map(p => `[${p.toXPath()}]`).join()}`,
+                                        location: getLocation(step.properties.location)
+                                    });
+                                    result.push(...this.extractRecursively(name, step.predicates, nameGenerator));
+                                }
+
                                 break;
 
                             case 'descendant':
@@ -127,6 +139,7 @@ export class Extractinator {
                     if (child.operationType === 'and' || child.operationType === 'or' || child.operationType === 'union') {
                         result.push(...this.extractRecursively(parentName, child.getChildren(), nameGenerator));
                     }
+                    break;
             }
         }
 

@@ -127,6 +127,18 @@ describe('XPath Extractinator',
                 '//node[@pt="lid" and following-sibling::node[@cat="np" and node[@pt="n"]]]',
                 [{ name: '$node1', path: '$node/following-sibling::node[@cat = "np" and node[@pt = "n"]]', location: location(40) },
                 { name: '$node2', path: '$node1/node[@pt = "n"]', location: location(59) }]);
+
+            expectExtract(
+                `//node[@pt and
+                ((@rel="hd" and parent::node[@rel="obj1" and ../node[@lemma="eten" and @rel="hd"]]) or
+                @rel="obj1" and parent::node[@lemma="eten"])]`,
+                [{
+                    name: '$node1',
+                    path: '$node/../node[@rel = "obj1" and ../node[@lemma = "eten" and @rel = "hd"]]',
+                    location: location(40, 2)
+                },
+                { name: '$node2', path: '$node1/../node[@lemma = "eten" and @rel = "hd"]', location: location(64, 2) },
+                { name: '$node3', path: '$node/../node[@lemma = "eten"]', location: location(40, 3) }]);
         });
 
         const location = (column: number, line: number = 1, length: number = 4) => {
@@ -165,7 +177,9 @@ describe('XPath Extractinator',
                     return {
                         name: variable.name,
                         path: variable.path,
-                        location: location(variable.location.firstColumn + 112)
+                        location: variable.location.line === 1
+                            ? location(variable.location.firstColumn + 112)
+                            : variable.location
                     };
                 })).map(formatPathVariables), xpath);
             }
