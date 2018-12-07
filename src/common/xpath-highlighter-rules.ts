@@ -18,7 +18,7 @@ export class XPathHighlighterRules extends TextHighlightRules {
                     next: "start"
                 }, {
                     token: "operator",
-                    regex: "(and|or|div|mod)",
+                    regex: "(and|or|div|mod)(?=[^A-Za-z_])",
                     next: "start"
                 }, {
                     token: "keyword",
