@@ -1,6 +1,5 @@
 import { XPathModels, XPathParser } from 'ts-xpath';
 import { PathVariable } from './extractinator';
-import XPathMode from '../components/xpath-editor/xpath-mode';
 
 const IndentSize = 4;
 
@@ -18,26 +17,26 @@ export class Reconstructor {
      * @returns An XML node structure
      */
     construct(variables: PathVariable[], xpath: string = null): string {
-        if (!variables || variables.length == 0) {
+        if (!variables || variables.length === 0) {
             return '<node cat="top"></node>';
         }
 
-        let index: { [name: string]: Node } = {};
-        for (let variable of variables) {
+        const index: { [name: string]: Node } = {};
+        for (const variable of variables) {
             index[variable.name] = { children: [], variable: Object.assign({}, variable) };
         }
 
         // determine the children
-        for (let variable of variables) {
-            if (variable.path.length == 0 || variable.path[0] != '$') {
+        for (const variable of variables) {
+            if (variable.path.length === 0 || variable.path[0] !== '$') {
                 // root node
                 continue;
             }
 
-            let parentName = variable.path.split('/', 1)[0];
-            let parent = index[parentName];
-            if (parent == undefined) {
-                throw `Parent not found: ${parentName}`;
+            const parentName = variable.path.split('/', 1)[0];
+            const parent = index[parentName];
+            if (parent === undefined) {
+                throw new Error(`Parent not found: ${parentName}`);
             }
             parent.children.push(index[variable.name]);
         }
@@ -50,21 +49,21 @@ export class Reconstructor {
     }
 
     private constructRecursively(node: Node, level = 0) {
-        let xpath = node.variable.path.substr(node.variable.path.indexOf('/'));
-        let parsed = this.parser.parse(xpath);
+        const xpath = node.variable.path.substr(node.variable.path.indexOf('/'));
+        const parsed = this.parser.parse(xpath);
         let attributesString = '';
-        if (parsed.type == 'path') {
-            let path = parsed;
-            let step = path.steps[0];
-            let attributes = this.constructAttributes(step.predicates);
+        if (parsed.type === 'path') {
+            const path = parsed;
+            const step = path.steps[0];
+            const attributes = this.constructAttributes(step.predicates);
             if (attributes.length) {
                 attributesString = ' ' + this.constructAttributes(step.predicates)
-                    .map(attr => attr.name + (attr.value == null ? '' : `="${attr.value}"`)).join(' ');
+                    .map(attr => attr.name + `="${attr.value || '*'}"`).join(' ');
             }
         }
 
-        let result = [this.indent(level, `<node varName="${node.variable.name}"${attributesString}>`)];
-        for (let child of node.children) {
+        const result = [this.indent(level, `<node varName="${node.variable.name}"${attributesString}>`)];
+        for (const child of node.children) {
             result.push(...this.constructRecursively(child, level + 1));
         }
 
@@ -73,8 +72,8 @@ export class Reconstructor {
     }
 
     private constructAttributes(expression: XPathModels.XPathExpression[]) {
-        let attributes: { name: string, value: string | null }[] = [];
-        for (let predicate of expression) {
+        const attributes: { name: string, value: string | null }[] = [];
+        for (const predicate of expression) {
             switch (predicate.type) {
                 case 'operation':
                     switch (predicate.operationType) {
@@ -86,33 +85,35 @@ export class Reconstructor {
                             break;
 
                         default:
-                            if (predicate.properties.type == '<' ||
-                                predicate.properties.type == '<=' ||
-                                predicate.properties.type == '>' ||
-                                predicate.properties.type == '>=' ||
-                                predicate.properties.type == '!=' ||
-                                predicate.properties.type == '==') {
+                            switch (predicate.properties.type) {
+                                case '<':
+                                case '<=':
+                                case '>':
+                                case '>=':
+                                case '!=':
+                                case '==':
+                                    // attribute test
+                                    const left = predicate.properties.left;
+                                    const right = predicate.properties.right;
 
-                                // attribute test
-                                let left = predicate.properties.left;
-                                let right = predicate.properties.right;
+                                    const yieldSide = (side: XPathModels.XPathExpression, other: XPathModels.XPathExpression) =>
+                                        (side.type === 'path' && side.steps.length && side.steps[0].properties.axis === 'attribute')
+                                            ? [{
+                                                name: side.steps[0].properties.name,
+                                                value: other.type === 'string' ||
+                                                    other.type === 'numeric' ? other.value.toString() : other.toXPath()
+                                            }]
+                                            : [];
 
-                                let yieldSide = (side: XPathModels.XPathExpression, other: XPathModels.XPathExpression) =>
-                                    (side.type == 'path' && side.steps.length && side.steps[0].properties.axis == 'attribute')
-                                        ? [{
-                                            name: side.steps[0].properties.name,
-                                            value: other.type == 'string' || other.type == 'numeric' ? other.value.toString() : other.toXPath()
-                                        }]
-                                        : [];
-
-                                attributes.push(...yieldSide(left, right));
-                                attributes.push(...yieldSide(right, left));
+                                    attributes.push(...yieldSide(left, right));
+                                    attributes.push(...yieldSide(right, left));
+                                    break;
                             }
                             break;
                     }
                     break;
                 case 'path':
-                    if (predicate.steps[0].properties.axis == 'attribute') {
+                    if (predicate.steps[0].properties.axis === 'attribute') {
                         // singular attribute
                         attributes.push({ name: predicate.steps[0].properties.name, value: null });
                     }
@@ -126,4 +127,4 @@ export class Reconstructor {
     }
 }
 
-type Node = { children: Node[], variable: PathVariable };
+interface Node { children: Node[]; variable: PathVariable; }
