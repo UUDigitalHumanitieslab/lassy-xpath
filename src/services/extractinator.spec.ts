@@ -141,47 +141,63 @@ describe('XPath Extractinator',
                 { name: '$node3', path: '$node/../../node[@lemma = "eten"]', location: location(40, 3) }]);
         });
 
+        it('Ignores metadata', () => {
+            expectExtract(
+                `//node
+                [ancestor::alpino_ds/metadata[
+                    meta[@name="session"] or
+                    meta[@name="charencoding"] or
+                    meta[@name="media"]]]`,
+                [],
+                false);
+        });
+
         const location = (column: number, line: number = 1, length: number = 4) => {
             return new Location(line, column, column + length);
         };
 
         const expectExtract = (xpath: string, expectedPaths: PathVariable[], checkOrdered: boolean = true, hasRoot = true) => {
-            const rootNode = { name: '$node', path: '*', location: location(2) };
-            const actualPaths = extractinator.extract(xpath);
-            const expectedPathsMapped = (hasRoot ? [rootNode].concat(expectedPaths) : expectedPaths).map(formatPathVariables);
-            expect(actualPaths.map(formatPathVariables)).toEqual(expectedPathsMapped, xpath);
-            const subPath = xpath.substring('//node['.length, xpath.length - 1);
+            try {
+                const rootNode = { name: '$node', path: '*', location: location(2) };
+                const actualPaths = extractinator.extract(xpath);
+                const expectedPathsMapped = (hasRoot ? [rootNode].concat(expectedPaths) : expectedPaths).map(formatPathVariables);
+                expect(actualPaths.map(formatPathVariables)).toEqual(expectedPathsMapped, xpath);
+                const subPath = xpath.substring('//node['.length, xpath.length - 1);
 
-            if (actualPaths.length) {
-                // check whether the annotation works
-                const annotated = extractinator.annotate(xpath, actualPaths);
-                expect(annotated.map(a => a.token.text).join('')).toEqual(xpath, 'Annotation should return the precise input.');
-                const missingPaths = actualPaths.concat([]);
-                for (const token of annotated) {
-                    if (token.variable) {
-                        const index = missingPaths.findIndex(t => t === token.variable);
-                        if (index === -1) {
-                            fail();
+                if (actualPaths.length) {
+                    // check whether the annotation works
+                    const annotated = extractinator.annotate(xpath, actualPaths);
+                    expect(annotated.map(a => a.token.text).join('')).toEqual(xpath, 'Annotation should return the precise input.');
+                    const missingPaths = actualPaths.concat([]);
+                    for (const token of annotated) {
+                        if (token.variable) {
+                            const index = missingPaths.findIndex(t => t === token.variable);
+                            if (index === -1) {
+                                fail();
+                            }
+                            missingPaths.splice(index, 1);
                         }
-                        missingPaths.splice(index, 1);
                     }
+                    expect(missingPaths).toEqual([], 'Paths missing!');
                 }
-                expect(missingPaths).toEqual([], 'Paths missing!');
-            }
 
-            if (checkOrdered) {
-                // tslint:disable-next-line:max-line-length
-                xpath = `//node[@cat="smain" and not(.//node[position() < last()][number(@begin) > number(following-sibling::node/@begin)]) and ${subPath}]`;
-                const orderedResult = extractinator.extract(xpath);
-                expect(orderedResult.map(formatPathVariables)).toEqual((hasRoot ? [rootNode] : []).concat(expectedPaths.map(variable => {
-                    return {
-                        name: variable.name,
-                        path: variable.path,
-                        location: variable.location.line === 1
-                            ? location(variable.location.firstColumn + 112)
-                            : variable.location
-                    };
-                })).map(formatPathVariables), xpath);
+                if (checkOrdered) {
+                    // tslint:disable-next-line:max-line-length
+                    xpath = `//node[@cat="smain" and not(.//node[position() < last()][number(@begin) > number(following-sibling::node/@begin)]) and ${subPath}]`;
+                    const orderedResult = extractinator.extract(xpath);
+                    expect(orderedResult.map(formatPathVariables)).toEqual(
+                        (hasRoot ? [rootNode] : []).concat(expectedPaths.map(variable => {
+                            return {
+                                name: variable.name,
+                                path: variable.path,
+                                location: variable.location.line === 1
+                                    ? location(variable.location.firstColumn + 112)
+                                    : variable.location
+                            };
+                        })).map(formatPathVariables), xpath);
+                }
+            } catch (error) {
+                fail(error);
             }
         };
 

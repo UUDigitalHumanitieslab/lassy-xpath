@@ -67,9 +67,12 @@ export class Extractinator {
         for (const child of children) {
             switch (child.type) {
                 case 'path':
-                    // this is a level below the parent e.g. $parent/*
-
+                    // this is a level below the parent e.g. $parent/*)
                     for (const step of child.steps) {
+                        if (/^(meta|metadata|ancestor::alpino_ds)$/.test(step.mainXPath(false))) {
+                            // ignore metadata
+                            continue;
+                        }
                         switch (step.properties.axis) {
                             case 'child':
                                 {
