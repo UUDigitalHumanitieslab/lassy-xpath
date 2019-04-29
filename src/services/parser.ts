@@ -1,4 +1,4 @@
-import { XpathAttributes } from '../common/xpath-attributes';
+import { XPathAttributes } from '../common/xpath-attributes';
 import { XPathModels, XPathParser } from 'ts-xpath';
 
 const elementNames = ['item', 'meta', 'metadata', 'node', 'parser', 'sentence'];
@@ -113,7 +113,7 @@ export class Parser {
                 right.type == 'string') {
                 // to the left is an attribute path, to the right a string value expression
                 let attributeName = left.steps[0].properties.name;
-                let attribute = XpathAttributes[attributeName];
+                let attribute = XPathAttributes[attributeName];
                 let attributeValue = right.value;
                 if (attribute && attribute.values.length && attribute.values.findIndex((val) => val[0] == attributeValue) == -1) {
                     return [this.createWarning(`Unknown attribute value "${attributeValue}"`, right.location, 0)];
@@ -129,7 +129,7 @@ export class Parser {
         for (let step of expression.steps) {
             if (step.properties.axis == 'attribute') {
                 // check the attribute's name
-                if (!XpathAttributes[step.properties.name]) {
+                if (!XPathAttributes[step.properties.name]) {
                     warnings.push(this.createWarning(`Unknown attribute @${step.properties.name}`, step.properties.location));
                 }
             } else if (step.properties.test == 'name') {

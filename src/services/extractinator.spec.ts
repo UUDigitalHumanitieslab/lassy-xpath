@@ -1,5 +1,6 @@
 import { Extractinator, Location, PathVariable } from './extractinator';
 import { XPathModels } from 'ts-xpath';
+import { XPathAttributes } from '../common';
 
 describe('XPath Extractinator',
     () => {
@@ -150,6 +151,15 @@ describe('XPath Extractinator',
                     meta[@name="media"]]]`,
                 [],
                 false);
+        });
+
+        it('Annotation includes descriptions', () => {
+            const annotated = extractinator.annotate('//node[@case="nom"]', []);
+            const attrDescription = XPathAttributes['case'].description;
+            const valueDescription = XPathAttributes['case'].values.find(val => val[0] === 'nom')[1];
+
+            expect(annotated.find(token => token.description === attrDescription)).toBeTruthy();
+            expect(annotated.find(token => token.description === valueDescription)).toBeTruthy();
         });
 
         const location = (column: number, line: number = 1, length: number = 4) => {

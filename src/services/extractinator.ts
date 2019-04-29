@@ -1,4 +1,5 @@
 import { XPathModels, XPathParser } from 'ts-xpath';
+import { XPathAttributes, XPathAttribute } from '../common/index';
 
 export class Extractinator {
     private parser: XPathParser;
@@ -45,17 +46,31 @@ export class Extractinator {
      */
     annotate(xPath: string, variables: PathVariable[]) {
         const annotated = this.parser.annotate(xPath);
-        const result: { token: XPathModels.XPathToken, variable: PathVariable | null }[] = [];
+        const result: { token: XPathModels.XPathToken, variable: PathVariable | null, description: string | null }[] = [];
 
+        let currentAttribute: XPathAttribute | null = null;
         for (const token of annotated) {
             let variable: PathVariable | null = null;
-            if (token.type === 'node.name' && token.expression.properties.name === 'node') {
-                // expect any query to at least start with //node
-                const location = getLocation(token.expression.properties.location);
-                variable = variables.find(v => location.equals(v.location));
+            let description: string | null = null;
+            if (token.type === 'node.name') {
+                if (token.expression.properties.name === 'node') {
+                    // expect any query to at least start with //node
+                    const location = getLocation(token.expression.properties.location);
+                    variable = variables.find(v => location.equals(v.location));
+                } else {
+                    currentAttribute = XPathAttributes[token.text];
+                    if (currentAttribute) {
+                        description = currentAttribute.description;
+                    }
+                }
+            } else if (currentAttribute && token.type === 'string.value') {
+                const value = currentAttribute.values.find(val => val[0] === token.text);
+                if (value) {
+                    description = value[1];
+                }
             }
 
-            result.push({ token, variable });
+            result.push({ token, variable, description });
         }
 
         return result;

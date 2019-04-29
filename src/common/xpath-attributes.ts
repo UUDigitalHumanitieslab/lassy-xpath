@@ -1,15 +1,15 @@
 // based on https://www.let.rug.nl/vannoord/Lassy/sa-man_lassy.pdf, http://www.let.rug.nl/vannoord/alp/Alpino/adt.html,
 // https://www.let.rug.nl/vannoord/Lassy/alpino_ds.dtd and https://github.com/rug-compling/paqu/blob/master/src/pqserve/attributes.txt
 // http://gretel.ccl.kuleuven.be/project/php/TreebankFreqsLASSY.html
-export type XPathAttribute = {
-    description: string,
+export interface XPathAttribute {
+    description: string;
     /**
      * [value, description][]
      */
-    values: [string, string][]
+    values: [string, string][];
 }
 
-export let XpathAttributes: { [name: string]: XPathAttribute } = {
+export let XPathAttributes: { [name: string]: XPathAttribute } = {
     'aform': { description: '', values: [] },
     'begin': { description: 'Begin position', values: [] },
     'buiging': {
@@ -839,4 +839,4 @@ export let XpathAttributes: { [name: string]: XPathAttribute } = {
             ['vd', '']
         ]
     },
-}
+};
