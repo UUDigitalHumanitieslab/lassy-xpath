@@ -1,6 +1,6 @@
 import { PathVariable, Extractinator, FormatError } from '../../services/extractinator';
 import * as $ from 'jquery';
-import { BehaviorSubject } from 'rxjs'
+import { BehaviorSubject } from 'rxjs';
 import { debounceTime, map, filter } from 'rxjs/operators';
 import { XPathModels } from 'ts-xpath';
 
@@ -16,8 +16,8 @@ export class XPathVariablesRenderer {
         filter(variables => variables != null));
 
     constructor(element: HTMLElement, source: string | JQuery, formName: string) {
-        let $element = $(element);
-        this.source = $(source);
+        const $element = $(element);
+        this.source = $(source as any);
 
         this.view = new View(formName, $element);
 
@@ -39,8 +39,7 @@ export class XPathVariablesRenderer {
     private extract(xpath: string) {
         try {
             return this.extractinator.extract(xpath);
-        }
-        catch (error) {
+        } catch (error) {
             if (!(error instanceof XPathModels.ParseError || error instanceof FormatError)) {
                 throw error;
             }
@@ -50,18 +49,18 @@ export class XPathVariablesRenderer {
     }
 }
 
-let xpathVariables: CreateXPathVariablesRenderer = function (options) {
+const xpathVariables: CreateXPathVariablesRenderer = function (options) {
     return this.each(function () {
-        let target = this;
+        const target = this;
         $(this).data('xpath-editor', new XPathVariablesRenderer(target, options.source, options.formName));
     });
-}
+};
 
 $.fn.extend({ xpathVariables });
 export type CreateXPathVariablesRenderer = (options: { source: string | JQuery, formName: string }) => JQuery;
 declare global {
     interface JQuery {
-        xpathVariables: CreateXPathVariablesRenderer
+        xpathVariables: CreateXPathVariablesRenderer;
     }
 }
 
@@ -72,8 +71,8 @@ class View {
     private paths: JQuery[] = [];
 
     private renderItem = (index: number) => {
-        let nameInput = $(`<input type="hidden" name="${this.formName}[${index}][name]" />`);
-        let pathInput = $(`<input type="hidden" name="${this.formName}[${index}][path]" />`);
+        const nameInput = $(`<input type="hidden" name="${this.formName}[${index}][name]" />`);
+        const pathInput = $(`<input type="hidden" name="${this.formName}[${index}][path]" />`);
 
         this.target.append(nameInput);
         this.target.append(pathInput);
@@ -90,7 +89,7 @@ class View {
             return;
         }
 
-        if (this.renderedLength != items.length) {
+        if (this.renderedLength !== items.length) {
             this.target.empty();
             this.names = [];
             this.paths = [];
@@ -101,8 +100,8 @@ class View {
         }
 
         for (let i = 0; i < items.length; i++) {
-            this.names[i].val(items[i].name)
-            this.paths[i].val(items[i].path)
+            this.names[i].val(items[i].name);
+            this.paths[i].val(items[i].path);
         }
     }
 }

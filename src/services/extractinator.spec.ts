@@ -140,6 +140,18 @@ describe('XPath Extractinator',
                 },
                 { name: '$node2', path: '$node1/../node[@lemma = "eten" and @rel = "hd"]', location: location(64, 2) },
                 { name: '$node3', path: '$node/../../node[@lemma = "eten"]', location: location(40, 3) }]);
+
+            expectExtract(
+                `//node[node[@rel="hd"] and .//node[@word="beetje"]]`,
+                [{
+                    name: '$node1',
+                    path: '$node/node[@rel = "hd"]',
+                    location: location(7)
+                }, {
+                    name: '$node2',
+                    path: '$node//node[@word = "beetje"]',
+                    location: location(30)
+                }]);
         });
 
         it('Ignores metadata', () => {

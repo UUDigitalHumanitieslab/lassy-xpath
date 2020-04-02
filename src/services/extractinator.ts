@@ -83,7 +83,11 @@ export class Extractinator {
             switch (child.type) {
                 case 'path':
                     // this is a level below the parent e.g. $parent/*)
+                    let abort = false;
                     for (const step of child.steps) {
+                        if (abort) {
+                            break;
+                        }
                         if (/^(meta|metadata|ancestor::alpino_ds)$/.test(step.mainXPath(false))) {
                             // ignore metadata
                             continue;
@@ -98,6 +102,31 @@ export class Extractinator {
                                         location: getLocation(step.properties.location)
                                     });
                                     result.push(...this.extractRecursively(name, step.predicates, nameGenerator));
+                                }
+                                break;
+
+                            case 'self':
+                                {
+                                    const index = child.steps.indexOf(step);
+                                    const remaining = child.steps.slice(index + 1);
+                                    if (remaining.length >= 2) {
+                                        if (remaining[0].properties.axis === 'descendant-or-self') {
+                                            abort = true;
+                                            // use the context node
+                                            const name = nameGenerator();
+                                            result.push({
+                                                name,
+                                                path: `${parentName}//${remaining[1].toXPath()}`,
+                                                // location of the node selector
+                                                location: getLocation(remaining[1].properties.location)
+                                            });
+
+                                            result.push(...this.extractRecursively(
+                                                name,
+                                                remaining.slice(2).map(s => s.predicates).reduce((prev, curr) => prev.concat(curr), []),
+                                                nameGenerator));
+                                        }
+                                    }
                                 }
                                 break;
 
