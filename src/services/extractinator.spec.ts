@@ -152,6 +152,22 @@ describe('XPath Extractinator',
                     path: '$node//node[@word = "beetje"]',
                     location: location(30)
                 }]);
+
+            expectExtract(
+                `//node[node[@rel="hd"] and .//node[@rel="mod" and node[@word="beetje"]]]`,
+                [{
+                    name: '$node1',
+                    path: '$node/node[@rel = "hd"]',
+                    location: location(7)
+                }, {
+                    name: '$node2',
+                    path: '$node//node[@rel = "mod" and node[@word = "beetje"]]',
+                    location: location(30)
+                }, {
+                    name: '$node3',
+                    path: '$node2/node[@word = "beetje"]',
+                    location: location(50)
+                }]);
         });
 
         it('Ignores metadata', () => {

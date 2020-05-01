@@ -84,6 +84,39 @@ describe('XPath Reconstruction',
                 { name: '$node2', path: '$node/node[@pt = "vnw" and number(@begin) > 5]' }]);
         });
 
+        it('Constructs descendant and self', () => {
+            expectReconstruct(
+                `<node varName="$node">
+    <node varName="$node1" rel="hd">
+    </node>
+    <node>
+        <node varName="$node2" word="beetje">
+        </node>
+    </node>
+</node>`,
+                [{ name: '$node', path: '*' },
+                { name: '$node1', path: '$node/node[@rel = "hd"]' },
+                { name: '$node2', path: '$node//node[@word = "beetje"]' }]);
+        });
+
+        it('Constructs descendant and self with children', () => {
+            expectReconstruct(
+                `<node varName="$node">
+    <node varName="$node1" rel="hd">
+    </node>
+    <node>
+        <node varName="$node2" rel="mod">
+            <node varName="$node3" word="beetje">
+            </node>
+        </node>
+    </node>
+</node>`,
+                [{ name: '$node', path: '*' },
+                { name: '$node1', path: '$node/node[@rel = "hd"]' },
+                { name: '$node2', path: '$node//node[@rel = "mod" and node[@word = "beetje"]]' },
+                { name: '$node3', path: '$node2/node[@word = "beetje"]' }]);
+        });
+
         const location = (column: number, line: number = 1, length: number = 4) => {
             return new Location(line, column, column + length);
         };

@@ -123,7 +123,7 @@ export class Extractinator {
 
                                             result.push(...this.extractRecursively(
                                                 name,
-                                                remaining.slice(2).map(s => s.predicates).reduce((prev, curr) => prev.concat(curr), []),
+                                                remaining.slice(1).map(s => s.predicates).reduce((prev, curr) => prev.concat(curr), []),
                                                 nameGenerator));
                                         }
                                     }

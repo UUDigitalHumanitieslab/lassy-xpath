@@ -45,19 +45,32 @@ export class Reconstructor {
             index['$node'].variable.path = xpath.substring(1); // assuming it starts with //
         }
 
-        return '<node cat="top">' + this.constructRecursively(index['$node']).join('\n') + '</node>';
+        return '<node cat="top">' + this.constructRecursively(index['$node'], 0).join('\n') + '</node>';
     }
 
-    private constructRecursively(node: Node, level = 0) {
-        const xpath = node.variable.path.substr(node.variable.path.indexOf('/'));
-        const parsed = this.parser.parse(xpath);
+    private constructRecursively(node: Node, level = 0, predicates?: XPathModels.XPathExpression[]) {
+        if (!predicates) {
+            const xpath = node.variable.path.substr(node.variable.path.indexOf('/'));
+            const parsed = this.parser.parse(xpath);
+            if (parsed.type === 'path') {
+                const path = parsed;
+                const step = path.steps[0];
+
+                if (step.properties.axis === 'descendant-or-self') {
+                    return [this.indent(level, '<node>'),
+                    ...this.constructRecursively(node, level + 1, path.steps[1].predicates),
+                    this.indent(level, '</node>')];
+                }
+
+                predicates = step.predicates;
+            }
+        }
+
         let attributesString = '';
-        if (parsed.type === 'path') {
-            const path = parsed;
-            const step = path.steps[0];
-            const attributes = this.constructAttributes(step.predicates);
+        if (predicates) {
+            const attributes = this.constructAttributes(predicates);
             if (attributes.length) {
-                attributesString = ' ' + this.constructAttributes(step.predicates)
+                attributesString = ' ' + this.constructAttributes(predicates)
                     .map(attr => attr.name + `="${attr.value || '*'}"`).join(' ');
             }
         }
