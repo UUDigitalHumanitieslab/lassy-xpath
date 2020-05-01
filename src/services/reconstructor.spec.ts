@@ -1,31 +1,30 @@
-import { PathVariable, Location } from './extractinator';
+import { Location } from './extractinator';
 import { Reconstructor } from './reconstructor';
-import { XPathModels } from 'ts-xpath';
 
-describe("XPath Reconstruction",
+describe('XPath Reconstruction',
     () => {
         let reconstructor: Reconstructor;
 
         beforeEach(() => {
             reconstructor = new Reconstructor();
-        })
+        });
 
-        it("Ignores empty input", () => {
+        it('Ignores empty input', () => {
             expectReconstruct('', []);
         });
 
-        it("Get parent's attributes (if set)", () => {
+        it('Get parent\'s attributes (if set)', () => {
             expectReconstruct(`<node varName="$node" pt="vnw">
 </node>`, [{ name: '$node', path: '*' }], '//node[@pt="vnw"]');
         });
 
-        it("Constructs root", () => {
+        it('Constructs root', () => {
             expectReconstruct(`<node varName="$node">
 </node>`,
                 [{ name: '$node', path: '*' }]);
         });
 
-        it("Constructs child", () => {
+        it('Constructs child', () => {
             expectReconstruct(`<node varName="$node">
     <node varName="$node1">
     </node>
@@ -34,7 +33,7 @@ describe("XPath Reconstruction",
                 { name: '$node1', path: '$node/node' }]);
         });
 
-        it("Constructs child with attributes", () => {
+        it('Constructs child with attributes', () => {
             expectReconstruct(`<node varName="$node">
     <node varName="$node1" pt="vnw" rel="su">
     </node>
@@ -43,7 +42,7 @@ describe("XPath Reconstruction",
                 { name: '$node1', path: '$node/node[@pt = "vnw" and @rel = "su"]' }]);
         });
 
-        it("Constructs multiple children", () => {
+        it('Constructs multiple children', () => {
             expectReconstruct(
                 `<node varName="$node">
     <node varName="$node1">
@@ -56,7 +55,7 @@ describe("XPath Reconstruction",
                 { name: '$node2', path: '$node/node[@cat = "np"]' }]);
         });
 
-        it("Constructs sub-children", () => {
+        it('Constructs sub-children', () => {
             expectReconstruct(
                 `<node varName="$node">
     <node varName="$node1">
@@ -72,7 +71,7 @@ describe("XPath Reconstruction",
                 { name: '$node3', path: '$node1/node[@pt = "lid"]' }]);
         });
 
-        it("Constructs union", () => {
+        it('Constructs union', () => {
             expectReconstruct(
                 `<node varName="$node">
     <node varName="$node1" pt="lid">
@@ -85,16 +84,16 @@ describe("XPath Reconstruction",
                 { name: '$node2', path: '$node/node[@pt = "vnw" and number(@begin) > 5]' }]);
         });
 
-        let location = (column: number, line: number = 1, length: number = 4) => {
+        const location = (column: number, line: number = 1, length: number = 4) => {
             return new Location(line, column, column + length);
-        }
+        };
 
-        let expectReconstruct = (expectedXml: string, inputPaths: { name: string, path: string }[], query?: string) => {
-            let actualXml = reconstructor.construct(inputPaths.map(path => {
+        const expectReconstruct = (expectedXml: string, inputPaths: { name: string, path: string }[], query?: string) => {
+            const actualXml = reconstructor.construct(inputPaths.map(path => {
                 // location is ignored
-                return Object.assign({ location: location(0) }, path)
+                return Object.assign({ location: location(0) }, path);
             }), query);
 
             expect(actualXml).toEqual('<node cat="top">' + expectedXml + '</node>');
-        }
+        };
     });
