@@ -20,10 +20,10 @@
     "author": "Sheean Spoel, Digital Humanities Lab <s.j.j.spoel@uu.nl>",
     "license": "CC-BY-NC-SA-4.0",
     "devDependencies": {
-        "@angular/common": "^7.2.16",
-        "@angular/compiler": "^7.2.16",
-        "@angular/compiler-cli": "^7.2.16",
-        "@angular/core": "^7.2.16",
+        "@angular/common": "^8.2.14",
+        "@angular/compiler": "^8.2.14",
+        "@angular/compiler-cli": "^8.2.14",
+        "@angular/core": "^8.2.14",
         "@types/es6-shim": "^0.31.37",
         "@types/jasmine": "^2.8.6",
         "@types/jquery": "^3.3.29",
@@ -44,12 +44,12 @@
         "karma-jquery": "^0.2.3",
         "karma-typescript": "^4.0.0",
         "karma-webpack": "^3.0.5",
-        "rxjs": "^6.3.2",
+        "rxjs": "^6.6.7",
         "ts-loader": "^4.1.0",
         "tslint": "^5.11.0",
-        "typescript": "~3.2.4",
+        "typescript": "~3.5.3",
         "webpack": "^4.42.1",
-        "zone.js": "^0.8.26"
+        "zone.js": "^0.9.1"
     },
     "dependencies": {
         "brace": "^0.11.1",

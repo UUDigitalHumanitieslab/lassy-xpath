@@ -3,12 +3,20 @@ import 'brace/mode/xquery';
 import * as ace from 'brace';
 import { functionCompletions, pathCompletions } from './alpino-xpath-completions';
 import { XPathAttributes } from '../../common/xpath-attributes';
+import { HighlighterRules } from '../../common/xpath-interfaces';
 import { MacroService } from '../../services/macro.jquery';
 import { AlpinoXPathHighlighter } from './alpino-xpath-highlighter-rules';
 const TokenIterator: {
     new(session: ace.IEditSession, initialRow: number, initialColumn: number): ace.TokenIterator
 } = ace.acequire('ace/token_iterator').TokenIterator;
-export let TextMode: { new(): any } = ace.acequire('ace/mode/text').Mode;
+
+interface TextModeType {
+    HighlightRules: HighlighterRules,
+    $outdent: any,
+    new(): any
+}
+export let TextMode: TextModeType = ace.acequire('ace/mode/text').Mode;
+
 // defined in the javascript mode!
 const MatchingBraceOutdent = ace.acequire('ace/mode/matching_brace_outdent').MatchingBraceOutdent;
 const CstyleBehaviour: AceBehaviour = ace.acequire('ace/mode/behaviour/cstyle').CstyleBehaviour;
@@ -21,8 +29,9 @@ export const modeName = 'xpath';
 export default class XPathMode extends TextMode {
     constructor() {
         super();
-        this.HighlightRules = AlpinoXPathHighlighter;
-        this.$outdent = new MatchingBraceOutdent();
+        const parent = <TextModeType><any>this;
+        parent.HighlightRules = AlpinoXPathHighlighter;
+        parent.$outdent = new MatchingBraceOutdent();
     }
 
     public completer = new Completer();
