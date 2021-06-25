@@ -55,6 +55,8 @@ Use the `ParserService` for parsing/validating a LASSY XML XPath.
 
 ## Publishing a new version
 
+*Run `npm run publish` from root or follow these steps:*
+
 1. Compile using `npm run build`
 2. `cd dist/lassy-xpath`
 3. Optionally run `npm pack` to test the package locally
