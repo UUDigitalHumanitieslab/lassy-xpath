@@ -48,7 +48,7 @@ export class Reconstructor {
         return '<node cat="top">' + this.constructRecursively(index['$node'], 0).join('\n') + '</node>';
     }
 
-    private constructRecursively(node: Node, level = 0, predicates?: XPathModels.XPathExpression[]) {
+    private constructRecursively(node: Node, level = 0, predicates?: XPathModels.XPathExpression[]): string[] {
         if (!predicates) {
             const xpath = node.variable.path.substr(node.variable.path.indexOf('/'));
             const parsed = this.parser.parse(xpath);

@@ -17,7 +17,7 @@ import { ParserService, MacroService } from '../../services/_ng';
 export class XPathEditorComponent extends XPathEditor implements OnDestroy, OnInit {
     private subscriptions: Subscription[];
 
-    @ViewChild('container')
+    @ViewChild('container', { static: true })
     public container: ElementRef;
 
     @Input()
