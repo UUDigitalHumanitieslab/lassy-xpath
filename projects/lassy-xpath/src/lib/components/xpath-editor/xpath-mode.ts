@@ -4,7 +4,7 @@ import * as ace from 'brace';
 import { functionCompletions, pathCompletions } from './alpino-xpath-completions';
 import { XPathAttributes } from '../../common/xpath-attributes';
 import { HighlighterRules } from '../../common/xpath-interfaces';
-import { MacroService } from '../../services/macro.jquery';
+import { MacroService } from '../../services/macro.service';
 import { AlpinoXPathHighlighter } from './alpino-xpath-highlighter-rules';
 const TokenIterator: {
     new(session: ace.IEditSession, initialRow: number, initialColumn: number): ace.TokenIterator

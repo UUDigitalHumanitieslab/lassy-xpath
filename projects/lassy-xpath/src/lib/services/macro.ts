@@ -2,7 +2,7 @@ import { DefaultMacros } from "../common/index";
 
 /**
  * The macro service is used to replace macro variables in the XPATH with the macro value.
- * This is done using the same syntax as used by PaQU e.g. `%PQ_example%`. 
+ * This is done using the same syntax as used by PaQU e.g. `%PQ_example%`.
  */
 export class Macro {
     /**
@@ -14,7 +14,7 @@ export class Macro {
     /**
      * Waits for the definitions to be loaded
      */
-    public onceLoaded: Promise<boolean> = new Promise<boolean>((resolve, reject) => {
+    public onceLoaded: Promise<void> = new Promise<void>((resolve) => {
         this.loaded = () => {
             resolve();
             this.loaded = () => { };
@@ -29,7 +29,7 @@ export class Macro {
     }
 
     /**
-     * Loads the macro definitions from the passed text data. 
+     * Loads the macro definitions from the passed text data.
      * @param data The definitions to load.
      */
     public loadFromText(data: string): void {
@@ -43,7 +43,7 @@ export class Macro {
 
     /**
      * Find all the macro references in the specified XPATH and returns their replacements.
-     * @param value 
+     * @param value
      * @returns The replacements which were performed (should be repeated sequentially) and the replacement results,
      * if no replacements were performed the result is false.
      */

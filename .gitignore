@@ -1,6 +1,2 @@
-**/*.js
-**/*.d.ts
-**/*.metadata.json
-**/*.ngsummary.json
 dist
 node_modules
