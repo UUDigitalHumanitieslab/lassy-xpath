@@ -42,6 +42,15 @@ describe('XPath Reconstruction',
                 { name: '$node1', path: '$node/node[@pt = "vnw" and @rel = "su"]' }]);
         });
 
+        it('Constructs child with duplicate attributes', () => {
+            expectReconstruct(`<node varName="$node">
+    <node varName="$node1" rel="det|su">
+    </node>
+</node>`,
+                [{ name: '$node', path: '*' },
+                { name: '$node1', path: '$node/node[@rel = "det" or @rel = "su"]' }]);
+        });
+
         it('Constructs multiple children', () => {
             expectReconstruct(
                 `<node varName="$node">

@@ -3,6 +3,11 @@ import { PathVariable } from './extractinator';
 
 const IndentSize = 4;
 
+interface Attribute {
+    name: string,
+    value: string | null
+}
+
 export class Reconstructor {
     private parser: XPathParser;
 
@@ -70,8 +75,7 @@ export class Reconstructor {
         if (predicates) {
             const attributes = this.constructAttributes(predicates);
             if (attributes.length) {
-                attributesString = ' ' + this.constructAttributes(predicates)
-                    .map(attr => attr.name + `="${attr.value || '*'}"`).join(' ');
+                attributesString = ' ' + this.attributesString(this.constructAttributes(predicates));
             }
         }
 
@@ -84,7 +88,20 @@ export class Reconstructor {
         return result;
     }
 
-    private constructAttributes(expression: XPathModels.XPathExpression[]) {
+    private attributesString(attributes: Attribute[]) {
+        const merged: { [name: string]: string } = {};
+        for (const attr of attributes) {
+            const value = attr.value || '*';
+            if (attr.name in merged) {
+                merged[attr.name] += `|${value}`;
+            } else {
+                merged[attr.name] = value;
+            }
+        }
+        return Object.entries(merged).map(([name, value]) => `${name}="${value}"`).join(' ');
+    }
+
+    private constructAttributes(expression: XPathModels.XPathExpression[]): Attribute[] {
         const attributes: { name: string, value: string | null }[] = [];
         for (const predicate of expression) {
             switch (predicate.type) {
