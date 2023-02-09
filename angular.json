@@ -35,5 +35,13 @@
             }
         }
     },
-    "defaultProject": "lassy-xpath"
+    "schematics": {
+        "@schematics/angular:component": {
+            "prefix": "lx",
+            "style": "scss"
+        },
+        "@schematics/angular:directive": {
+            "prefix": "lx"
+        }
+    }
 }
