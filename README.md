@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/UUDigitalHumanitieslab/lassy-xpath.svg?branch=develop)](https://travis-ci.org/UUDigitalHumanitieslab/lassy-xpath)
+[![Build Status](https://github.com/UUDigitalHumanitieslab/lassy-xpath/workflows/tests/badge.svg)](https://github.com/UUDigitalHumanitieslab/lassy-xpath/actions)
+[![npm version](https://badge.fury.io/js/lassy-xpath.svg)](https://badge.fury.io/js/lassy-xpath)
 
 ## LASSY XPath
 
@@ -6,10 +7,15 @@ Module for working with XPath queries on [LASSY XML](https://www.let.rug.nl/vann
 
 ## Compatibility
 
+- v0.15.x is for Angular 15
 - v0.12.x is for Angular 12
 - v0.4.3 and down should work with Angular 6 and JQuery
 
 ## Angular
+
+```bash
+npm install lassy-xpath
+```
 
 Import the module:
 

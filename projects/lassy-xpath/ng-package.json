@@ -3,5 +3,6 @@
   "dest": "../../dist/lassy-xpath",
   "lib": {
     "entryFile": "src/public-api.ts"
-  }
+  },
+  "allowedNonPeerDependencies": ["brace", "ts-xpath"]
 }
