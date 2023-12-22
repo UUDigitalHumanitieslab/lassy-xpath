@@ -1,9 +1,12 @@
+[![DOI](https://zenodo.org/badge/129089800.svg)](https://zenodo.org/doi/10.5281/zenodo.10426257)
 [![Build Status](https://github.com/UUDigitalHumanitieslab/lassy-xpath/workflows/tests/badge.svg)](https://github.com/UUDigitalHumanitieslab/lassy-xpath/actions)
 [![npm version](https://badge.fury.io/js/lassy-xpath.svg)](https://badge.fury.io/js/lassy-xpath)
 
 ## LASSY XPath
 
 Module for working with XPath queries on [LASSY XML](https://www.let.rug.nl/vannoord/Lassy/) files. It includes a graphical editor including auto completion, macros and validation based on [Ace](https://ace.c9.io/), a parser and validator based on [ts-xpath](https://github.com/UUDigitalHumanitieslab/ts-xpath) and an "extractinator" for determining XPaths to get each node from the returned tree separately. It also has a "reconstructor" to create an XML structure representing the query tree. The functionality can be used as an Angular module.
+
+It is developed for and used by the [GrETEL search tool](https://gretel.hum.uu.nl/).
 
 ## Compatibility
 
